@@ -6,17 +6,17 @@ dotenv.config({ path: "./config.env" });
 
 export const authenticateUser = async (req, res) => {
   const { username, password } = req.body;
-  const user = await User.findOne({ username, password });
+  const user = await User.findOne({ username});
   if (user?.username) {
     if (user?.password === password) {
-      res.json({ message: "Authenticated" });
+      res.json({ status:200,message: "Authenticated" });
       console.log("authenticated");
       return;
     } else {
-      res.json({ message: "Authentication failed" });
+      res.json({ status:401,message: "Authentication failed" });
     }
   } else {
-    res.json({ message: "user doesn't exist!" });
+    res.json({ status:401,message: "user doesn't exist!" });
   }
 };
 
