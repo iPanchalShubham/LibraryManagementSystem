@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const schema = mongoose.Schema({
   name: {
@@ -13,6 +13,6 @@ const schema = mongoose.Schema({
   },
   imageUrl: {
     type: String,
-  },
+  }
 });
 export const Book = mongoose.model("Books", schema);

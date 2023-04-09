@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const schema = mongoose.Schema({
     username:{
@@ -6,7 +6,13 @@ const schema = mongoose.Schema({
     },
     password:{
         type:String
+    },
+    books:[{
+        type:Schema.Types.ObjectId,
+        ref:"Books"
     }
+
+    ]
 })
 
 export const User = mongoose.model("Users",schema)
