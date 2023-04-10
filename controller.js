@@ -60,10 +60,10 @@ export const getAllBooks = async (req, res) => {
 };
 
 export const reserveBook = async (req, res) => {
-  const { username, bookId } = req.body;
+  const { userId, bookId } = req.body;
   const bookObjectId = new mongoose.Types.ObjectId(bookId);
   const user = await User.findOneAndUpdate(
-    { username: username },
+    { _id: userId },
     { $push: { books: bookObjectId } }
   );
   console.log(bookObjectId);
@@ -78,14 +78,19 @@ export const reserveBook = async (req, res) => {
 export const unReserveBook = async(req,res)=>{
   const { userId, bookId } = req.body;
   console.log(req.body)
-const res1 =  await User.updateOne(
+ await User.updateOne(
     { _id: userId },
     { $pull: { books: bookId } },
-  ).then(res =>{
-    console.log(res);
+  ).then(modificationRes =>{
+    if (modificationRes?.modifiedCount) {
+      res.json({ status: 201, message: "Book unreserved successfully" });
+    } else {
+      res.json({ status: 404, message: "Book or user doesn't exist" });
+    }
   }).catch((e)=>{
     console.log(e.message)
   })
+  
 }
 
 
