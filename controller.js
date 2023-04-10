@@ -22,6 +22,18 @@ export const authenticateUser = async (req, res) => {
   }
 };
 
+export const getProfileByID = async (req, res)=>{
+  const { id } = req.body;
+  const user = await User.findById({ _id:id }).populate("books").exec();
+  if (user?.username) {
+      res.json({ status: 200, message: "success", data: user });
+      console.log("success");
+      return;
+    } else {
+      res.json({ status: 401, message: "User doesn't exist" });
+    }
+}
+
 export const getAllBooks = async (req, res) => {
   console.log(req.query.query);
   if (!req.query.query) {
@@ -62,4 +74,18 @@ export const reserveBook = async (req, res) => {
   }
 };
 
-export const searchBooks = async (req, res) => {};
+
+export const unReserveBook = async(req,res)=>{
+  const { userId, bookId } = req.body;
+  console.log(req.body)
+const res1 =  await User.updateOne(
+    { _id: userId },
+    { $pull: { books: bookId } },
+  ).then(res =>{
+    console.log(res);
+  }).catch((e)=>{
+    console.log(e.message)
+  })
+}
+
+
