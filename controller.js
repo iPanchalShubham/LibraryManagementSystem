@@ -61,17 +61,26 @@ export const getAllBooks = async (req, res) => {
 
 export const reserveBook = async (req, res) => {
   const { userId, bookId } = req.body;
-  const bookObjectId = new mongoose.Types.ObjectId(bookId);
-  const user = await User.findOneAndUpdate(
-    { _id: userId },
-    { $push: { books: bookObjectId } }
-  );
-  console.log(bookObjectId);
-  if (user?.username) {
-    res.json({ status: 201, message: "Book added successfully" });
-  } else {
-    res.json({ status: 404, message: "Book or user doesn't exist" });
+  // Find the user 
+  const findUser  = await User.findById({_id:userId})
+  //  Check if the user already have this book or not
+  const book = findUser.books.includes(bookId)
+  if(book){
+    res.json({ status: 401, message: `${findUser.username} have already reserved the book` });
+  }else{
+    const bookObjectId = new mongoose.Types.ObjectId(bookId);
+   const user =  await User.findOneAndUpdate(
+      { _id: userId },
+      { $push: { books: bookObjectId } }
+    );
+    console.log(bookObjectId);
+    if (user?.username) {
+      res.json({ status: 201, message: "Book added successfully" });
+    } else {
+      res.json({ status: 404, message: "Book or user doesn't exist" });
+    }
   }
+  
 };
 
 
